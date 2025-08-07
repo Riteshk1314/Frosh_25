@@ -19,27 +19,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
-  googleId: {
-    type: String,
-    required: true,
-    unique: true,
-  },
 
-  // optional fields
-  displayName: {
-    type: String,
-    default: "", 
-  },
-  about: {
-    type: String,
-    default: "", 
-  },
-
-  likedEvents: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: "Event",
-    default: [],
-  },
 
   //backend
   accessToken: {
@@ -56,7 +36,7 @@ const UserSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["user", "admin","organizer"],
+    enum: ["user", "admin", "superadmin"],
     default: "user",
   },
 });

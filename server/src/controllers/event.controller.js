@@ -1,13 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const Event = require("../models/events.model.js");
-const reqEvent = require("../models/reqEvent.model.js");
 const Pass = require("../models/passes.model.js");
-const {
-	validateEmail,
-	validatePhoneNumber,
-} = require("../helpers/validatorHelper");
 const User = require("../models/users.model.js");
-const { validateEvent } = require("../schemas/event.schema.js");
 
 const createEvent = asyncHandler(async (req, res) => {
 	if (!req.body) {
@@ -21,42 +15,47 @@ const createEvent = asyncHandler(async (req, res) => {
 
 	try {
 		const {
-			eventName,
-			category,
+			name,
 			mode,
 			location,
-			duration,
-			ticketPrice,
-			totalSeats,
-			visibility,
-			prizes,
-			photographs,
-			startDate,
+			slots,
 			startTime,
-			endRegistrationDate,
+			totalSeats,
 			eventDescription,
+			isLive = false,
 		} = req.body;
+
+		// Validate required fields
+		if (!name || !mode || !startTime || totalSeats === undefined) {
+			return res.status(400).json({
+				message: "Required fields: name, mode, startTime, totalSeats"
+			});
+		}
+
 		const event = new Event({
-			eventName,
-			category,
+			name,
 			mode,
 			location,
-			duration,
-			ticketPrice,
-			totalSeats,
-			visibility,
-			prizes,
-			photographs,
-			startDate,
+			slots,
 			startTime,
-			endRegistrationDate,
+			totalSeats,
 			eventDescription,
-			organiserId: req.user._id,
+			isLive,
+			registrationCount: 0,
 		});
+		
 		await event.save();
-		res.status(201).json(event);
+		res.status(201).json({
+			success: true,
+			message: "Event created successfully",
+			data: event
+		});
 	} catch (error) {
-		res.status(500).json({ message: error.message });
+		res.status(500).json({ 
+			success: false,
+			message: "Failed to create event",
+			error: error.message 
+		});
 	}
 });
 const getEvents = asyncHandler(async (req, res) => {
@@ -64,44 +63,29 @@ const getEvents = asyncHandler(async (req, res) => {
 		const {
 			page = 1,
 			limit = 10,
-			sortBy = "startDate",
+			sortBy = "startTime",
 			order = "asc",
 			mode,
-			category,
-			visibility,
 			search = "",
-			minPrice,
-			maxPrice,
 		} = req.query;
 
 		// Build query
 		const query = {};
 
-		if (mode) { query.mode = mode; }
-		if (category) { query.category = category; }
-		if (visibility) { query.visibility = visibility; }
-
-		if (minPrice || maxPrice) {
-			query.ticketPrice = {};
-			if (minPrice) { query.ticketPrice.$gte = Number(minPrice); }
-			if (maxPrice) { query.ticketPrice.$lte = Number(maxPrice); }
+		if (mode) { 
+			query.mode = mode; 
 		}
 
 		if (search) {
 			query.$or = [
-				{ eventName: { $regex: search, $options: "i" } },
+				{ name: { $regex: search, $options: "i" } },
 				{ eventDescription: { $regex: search, $options: "i" } },
-				{ category: { $regex: search, $options: "i" } },
 			];
 		}
-
-		// console.log("Generated Query:", JSON.stringify(query, null, 2));
 
 		// Pagination
 		const skip = (parseInt(page) - 1) * parseInt(limit);
 		const sortOptions = { [sortBy]: order === "desc" ? -1 : 1 };
-
-		// console.log("Skip:", skip, "Limit:", limit);
 
 		const events = await Event.find(query)
 			.select("-__v")
@@ -112,11 +96,8 @@ const getEvents = asyncHandler(async (req, res) => {
 
 		const total = await Event.countDocuments(query);
 
-		// console.log("Fetched Events:", events);
-		// console.log("Total Events:", total);
-
 		res.status(200).json({
-			status: "success",
+			success: true,
 			data: {
 				events,
 				pagination: {
@@ -130,7 +111,7 @@ const getEvents = asyncHandler(async (req, res) => {
 	} catch (error) {
 		console.error("Error in getEvents:", error);
 		res.status(500).json({
-			status: "error",
+			success: false,
 			message: "Failed to fetch events",
 			error: error.message,
 		});
@@ -141,19 +122,19 @@ const getEventById = async (req, res) => {
 		const { id } = req.params;
 
 		const event = await Event.findById(id).select("-__v").lean();
-		console.log(id);
+		
 		if (!event) {
 			return res.status(404).json({
-				status: "error",
+				success: false,
 				message: "Event not found",
 			});
 		}
 
-		// Calculate available seats
-		const availableSeats = event.totalSeats; // You'll need to subtract booked seats here when you implement booking
+		// Calculate available seats (totalSeats - registrationCount)
+		const availableSeats = event.totalSeats - event.registrationCount;
 
 		res.status(200).json({
-			status: "success",
+			success: true,
 			data: {
 				...event,
 				availableSeats,
@@ -162,7 +143,7 @@ const getEventById = async (req, res) => {
 	} catch (error) {
 		console.error("Error in getEventById:", error);
 		res.status(500).json({
-			status: "error",
+			success: false,
 			message: "Failed to fetch event",
 			error: error.message,
 		});
@@ -328,15 +309,9 @@ const reqEventt = asyncHandler(async (req, res) => {
 			res.status(500).json({ error: "Internal server error" });
 		}
 	});
-	
+
 module.exports = {
 	createEvent,
 	getEvents,
 	getEventById,
-	likeEvent,
-	unlikeEvent,
-	getAllLikedEvents,
-	addEvent,
-	deleteSpecificEvent,
-	reqEventt,
 };
