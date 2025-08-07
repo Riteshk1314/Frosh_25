@@ -3,18 +3,25 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, LogOut, User } from 'lucide-react';
 import { useState } from 'react';
+import { useAuth } from './auth-provider';
 
 export default function Navigation() {
   const pathname = usePathname();
+  const { user, isAuthenticated, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = [
     { href: '/', label: 'Home' },
-    { href: '/event', label: 'Event Info' },
-    { href: '/tickets', label: 'Register' },
+    { href: '/events', label: 'Events' },
+    { href: '/tickets', label: 'Book Tickets' },
   ];
+
+  const handleLogout = () => {
+    logout();
+    setIsMenuOpen(false);
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border-b border-navy-800">
@@ -22,7 +29,7 @@ export default function Navigation() {
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="flex items-center space-x-2">
             <div className="text-2xl font-bold text-white">
-              FROSH <span className="text-blue-400">2024</span>
+              THAPAR <span className="text-blue-400">EVENTS</span>
             </div>
           </Link>
 
@@ -41,9 +48,28 @@ export default function Navigation() {
                 {item.label}
               </Link>
             ))}
-            <Button asChild size="sm" className="bg-blue-600 hover:bg-blue-700">
-              <Link href="/tickets">Register Now</Link>
-            </Button>
+            
+            {isAuthenticated ? (
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2 text-white">
+                  <User className="h-4 w-4" />
+                  <span className="text-sm">{user?.name}</span>
+                </div>
+                <Button
+                  onClick={handleLogout}
+                  variant="outline"
+                  size="sm"
+                  className="border-red-600 text-red-400 hover:bg-red-600 hover:text-white"
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <Button asChild size="sm" className="bg-blue-600 hover:bg-blue-700">
+                <Link href="/login">Login</Link>
+              </Button>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -77,12 +103,31 @@ export default function Navigation() {
                   {item.label}
                 </Link>
               ))}
+              
               <div className="px-3 py-2">
-                <Button asChild size="sm" className="w-full bg-blue-600 hover:bg-blue-700">
-                  <Link href="/tickets" onClick={() => setIsMenuOpen(false)}>
-                    Register Now
-                  </Link>
-                </Button>
+                {isAuthenticated ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2 text-white">
+                      <User className="h-4 w-4" />
+                      <span className="text-sm">{user?.name}</span>
+                    </div>
+                    <Button
+                      onClick={handleLogout}
+                      variant="outline"
+                      size="sm"
+                      className="w-full border-red-600 text-red-400 hover:bg-red-600 hover:text-white"
+                    >
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Logout
+                    </Button>
+                  </div>
+                ) : (
+                  <Button asChild size="sm" className="w-full bg-blue-600 hover:bg-blue-700">
+                    <Link href="/login" onClick={() => setIsMenuOpen(false)}>
+                      Login
+                    </Link>
+                  </Button>
+                )}
               </div>
             </div>
           </div>

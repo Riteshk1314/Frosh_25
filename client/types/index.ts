@@ -93,6 +93,26 @@ export interface BookTicketResponse {
   };
 }
 
+export interface Pass {
+  passId: string;
+  userId: string;
+  eventId: string;
+  passStatus: 'active' | 'inactive' | 'used';
+  isScanned: boolean;
+  timeScanned: string | null;
+  createdAt: string;
+  userEmail: string;
+}
+
+export interface PassResponse {
+  success: boolean;
+  message: string;
+  data: {
+    passes: Pass[];
+    count: number;
+  };
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   data: T;

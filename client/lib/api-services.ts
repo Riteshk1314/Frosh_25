@@ -65,3 +65,25 @@ export const ticketService = {
     return await api.post<BookTicketResponse>('/bookTicket', bookingData);
   }
 };
+
+export const passService = {
+  async getPassForEvent(eventId: string): Promise<{
+    success: boolean;
+    message: string;
+    data: {
+      passes: Array<{
+        passId: string;
+        userId: string;
+        eventId: string;
+        passStatus: 'active' | 'inactive' | 'used';
+        isScanned: boolean;
+        timeScanned: string | null;
+        createdAt: string;
+        userEmail: string;
+      }>;
+      count: number;
+    };
+  }> {
+    return await api.post('/getPassReq', { eventId });
+  }
+};
