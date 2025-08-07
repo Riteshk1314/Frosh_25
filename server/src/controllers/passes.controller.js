@@ -221,21 +221,21 @@ const getPassByUUID = async (req, res) => {
 
 const getPassByUserAndEvent = async (req, res) => {
   try {
-    const { eventId } = req.body;
-    
-    if (!req.user?._id || !eventId) {
+     const { eventId } = req.body;
+    const userId = req.user?.userId;
+
+    if (!userId || !eventId) {
       return res.status(400).json({
         success: false,
         error: "User ID and Event ID are required"
       });
     }
-
+    console.log("Fetching passes for user:", userId, "and event:", eventId);
     const passes = await Pass.find({
-      userId: req.user._id,
+      userId: userId,
       eventId: eventId,
-      passStatus: "active"
-    }).populate('eventId', 'name startTime location mode');
-
+    })
+    console.log("Found passes:", passes);
     if (!passes || passes.length === 0) {
       return res.status(404).json({ 
         success: false,
