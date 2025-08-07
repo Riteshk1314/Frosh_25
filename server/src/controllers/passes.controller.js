@@ -1,6 +1,5 @@
 const asyncHandler = require("express-async-handler");
 const express = require("express");
-const auth = require("../middleware/oauth.js");
 const Event = require("../models/events.model.js");
 const Pass = require("../models/passes.model.js");
 const User = require("../models/users.model.js");
@@ -10,8 +9,6 @@ const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
 const axios = require('axios');
 const qs = require('qs');
-const { listeners } = require("../models/registration.model.js");
-
 
 
 const bookTicket = async (req, res) => {

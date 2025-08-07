@@ -6,7 +6,6 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const logger = require("./util/logger");
 const PORT = process.env.PORT;
-// const PORT = 300;
 
 
 // Instantiate an Express Application
