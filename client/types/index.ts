@@ -84,12 +84,17 @@ export interface BookTicketRequest {
 
 export interface BookTicketResponse {
   success: boolean;
+  message: string;
   data: {
-    ticketId: string;
+    passId: string;
     eventId: string;
-    userId: string;
-    bookingDate: string;
-    qrCode?: string;
+    eventName: string;
+    eventStartTime: string;
+    eventLocation: string;
+    eventMode: string;
+    passStatus: 'active' | 'inactive' | 'used';
+    createdAt: string;
+    remainingSeats: number;
   };
 }
 

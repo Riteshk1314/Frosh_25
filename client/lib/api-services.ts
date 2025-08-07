@@ -75,6 +75,10 @@ export const passService = {
         passId: string;
         userId: string;
         eventId: string;
+        eventName: string;
+        eventStartTime: string;
+        eventLocation: string;
+        eventMode: string;
         passStatus: 'active' | 'inactive' | 'used';
         isScanned: boolean;
         timeScanned: string | null;
@@ -84,6 +88,6 @@ export const passService = {
       count: number;
     };
   }> {
-    return await api.post('/getPassReq', { eventId });
+    return await api.post('/getPass', { eventId });
   }
 };
