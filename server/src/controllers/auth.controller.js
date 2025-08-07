@@ -19,7 +19,7 @@ const generateTokens = (userId, role) => {
   const accessToken = jwt.sign(
     { userId, role },
     process.env.SECRET, // Using your existing SECRET from .env
-    { expiresIn: '15m' }
+    { expiresIn: '7d' }
   );
   
   const refreshToken = jwt.sign(
