@@ -12,77 +12,106 @@ const qs = require('qs');
 
 
 const bookTicket = async (req, res) => {
+  const session = await mongoose.startSession();
+  
   try {
-    console.log('Booking ticket request:', req.body);
+    // Input validation with early returns
+    const { eventId } = req.body;
+    const userId = req.user?.userId;
 
-    // Validation
-    if (!req.user?._id || !req.body.eventId) {
+    if (!userId || !eventId) {
       return res.status(400).json({
         success: false,
         error: "User ID and Event ID are required"
       });
     }
 
-    const user = await User.findById(req.user._id);
-    if (!user) {
-      return res.status(404).json({
+    // Validate ObjectId format early
+    if (!mongoose.Types.ObjectId.isValid(eventId) || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({
         success: false,
-        error: "User not found"
+        error: "Invalid ID format"
       });
     }
 
-    const event = await Event.findById(req.body.eventId);
+    // Start transaction for atomic operations
+    session.startTransaction();
+
+    // Use findOneAndUpdate for atomic seat booking with optimistic locking
+    const event = await Event.findOneAndUpdate(
+      {
+        _id: eventId,
+        $expr: { $gt: ["$totalSeats", "$registrationCount"] } // Ensure seats available
+      },
+      {
+        $inc: { registrationCount: 1 } // Atomically increment
+      },
+      {
+        new: true,
+        session,
+        runValidators: true
+      }
+    );
+
     if (!event) {
-      return res.status(404).json({
+      await session.abortTransaction();
+      
+      // Check if event exists or just no seats
+      const eventExists = await Event.findById(eventId).select('_id totalSeats registrationCount');
+      if (!eventExists) {
+        return res.status(404).json({
+          success: false,
+          error: "Event not found"
+        });
+      }
+      
+      return res.status(409).json({
         success: false,
-        error: "Event not found"
+        error: "No tickets available - event is fully booked",
+        availableSeats: Math.max(0, eventExists.totalSeats - eventExists.registrationCount)
       });
     }
 
-    // Check if user already has a pass for this event
+    // Check for existing active pass with database-level constraint
     const existingPass = await Pass.findOne({
-      userId: req.user._id,
-      eventId: req.body.eventId,
+      userId: new mongoose.Types.ObjectId(userId),
+      eventId: new mongoose.Types.ObjectId(eventId),
       passStatus: "active"
-    });
+    }).session(session);
 
     if (existingPass) {
-      return res.status(400).json({
+      // Rollback the seat increment
+      await Event.findByIdAndUpdate(
+        eventId,
+        { $inc: { registrationCount: -1 } },
+        { session }
+      );
+      
+      await session.abortTransaction();
+      return res.status(409).json({
         success: false,
-        error: "You already have a ticket for this event"
+        error: "You already have an active ticket for this event",
+        existingPassId: existingPass._id
       });
     }
 
-    // Check available seats
-    const availableSeats = event.totalSeats - event.registrationCount;
-    if (availableSeats <= 0) {
-      return res.status(400).json({
-        success: false,
-        error: "No tickets available for this event"
-      });
-    }
-
-    // Create pass
+    // Create the pass
     const pass = new Pass({
-      userId: req.user._id,
-      eventId: req.body.eventId,
+      userId: new mongoose.Types.ObjectId(userId),
+      eventId: new mongoose.Types.ObjectId(eventId),
       passStatus: "active",
       isScanned: false,
       timeScanned: null,
       createdAt: new Date(),
     });
 
-    await pass.save();
+    await pass.save({ session });
 
-    // Update event registration count
-    await Event.findByIdAndUpdate(
-      req.body.eventId,
-      { $inc: { registrationCount: 1 } }
-    );
+    // Commit the transaction
+    await session.commitTransaction();
 
-    console.log('Pass created with ID:', pass._id);
-
-    return res.status(200).json({
+    // Return success response with minimal data
+    res.status(201).json({
       success: true,
       message: "Ticket booked successfully",
       data: {
@@ -93,17 +122,59 @@ const bookTicket = async (req, res) => {
         eventLocation: event.location,
         eventMode: event.mode,
         passStatus: pass.passStatus,
-        createdAt: pass.createdAt
+        createdAt: pass.createdAt,
+        remainingSeats: event.totalSeats - event.registrationCount
       }
     });
 
   } catch (error) {
-    console.error('Ticket booking error:', error);
+    // Always abort transaction on error
+    if (session.inTransaction()) {
+      await session.abortTransaction();
+    }
+
+    console.error('Ticket booking error:', {
+      error: error.message,
+      stack: error.stack,
+      userId: req.user?.userId,
+      eventId: req.body?.eventId,
+      timestamp: new Date().toISOString()
+    });
+
+    // Handle specific error types
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid data provided",
+        details: Object.keys(error.errors).map(key => error.errors[key].message)
+      });
+    }
+
+    if (error.name === 'MongoServerError' && error.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        error: "Duplicate booking detected"
+      });
+    }
+
+    // Network/timeout errors
+    if (error.name === 'MongoNetworkError' || error.code === 'ECONNRESET') {
+      return res.status(503).json({
+        success: false,
+        error: "Service temporarily unavailable. Please try again."
+      });
+    }
+
+    // Generic server error
     return res.status(500).json({
       success: false,
-      error: "Failed to book ticket",
-      message: error.message,
+      error: "Failed to book ticket. Please try again.",
+      requestId: req.headers['x-request-id'] || Date.now()
     });
+
+  } finally {
+    // Always end the session
+    await session.endSession();
   }
 };
 

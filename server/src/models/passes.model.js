@@ -1,8 +1,7 @@
-const { bool, boolean } = require("joi");
 const mongoose = require("mongoose");
-const { v4: uuidv4 } = require('uuid');
 
 const passSchema = new mongoose.Schema({
+	
 	userId: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "User",
