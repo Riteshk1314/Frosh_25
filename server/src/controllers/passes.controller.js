@@ -11,6 +11,9 @@ const { v4: uuidv4 } = require('uuid');
 const axios = require('axios');
 const qs = require('qs');
 const { listeners } = require("../models/registration.model.js");
+
+
+
 const bookTicket = async (req, res) => {
   try {
     console.log('Booking ticket request:', req.body);
