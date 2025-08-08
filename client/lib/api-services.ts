@@ -70,24 +70,26 @@ export const passService = {
   async getPassForEvent(eventId: string): Promise<{
     success: boolean;
     message: string;
-    data: {
-      passes: Array<{
-        passId: string;
-        userId: string;
-        eventId: string;
-        eventName: string;
-        eventStartTime: string;
-        eventLocation: string;
-        eventMode: string;
-        passStatus: 'active' | 'inactive' | 'used';
-        isScanned: boolean;
-        timeScanned: string | null;
-        createdAt: string;
-        userEmail: string;
-      }>;
-      count: number;
+    pass?: {
+      _id: string;
+      userId: string;
+      eventId: string;
+      passStatus: 'active' | 'inactive' | 'used';
+      isScanned: boolean;
+      timeScanned: string | null;
+      createdAt: string;
+      userEmail?: string;
     };
   }> {
-    return await api.post('/getPass', { eventId });
+    console.log('PassService: Making request to /getPass with eventId:', eventId);
+    
+    try {
+      const result = await api.post('/getPass', { eventId });
+      console.log('PassService: Successful response:', result);
+      return result as any;
+    } catch (error) {
+      console.error('PassService: Error response:', error);
+      throw error;
+    }
   }
 };

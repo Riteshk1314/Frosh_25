@@ -2,24 +2,19 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Calendar, Clock, MapPin, Users, ChevronLeft, ChevronRight, Loader2, AlertTriangle } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { eventService } from '@/lib/api-services';
 import { useAuth } from './auth-provider';
 import type { Event } from '@/types';
 
 export default function EventsCarousel() {
-  const router = useRouter();
   const { isAuthenticated } = useAuth();
   const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  const [showLoginAlert, setShowLoginAlert] = useState(false);
-  const [selectedEventForBooking, setSelectedEventForBooking] = useState<string>('');
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -53,21 +48,6 @@ export default function EventsCarousel() {
     setCurrentIndex(index);
   };
 
-  const handleBookNow = (eventId: string) => {
-    if (!isAuthenticated) {
-      setSelectedEventForBooking(eventId);
-      setShowLoginAlert(true);
-      return;
-    }
-    
-    router.push(`/tickets?eventId=${eventId}`);
-  };
-
-  const handleLoginRedirect = () => {
-    setShowLoginAlert(false);
-    router.push(`/login?redirect=${encodeURIComponent(`/tickets?eventId=${selectedEventForBooking}`)}`);
-  };
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -94,36 +74,6 @@ export default function EventsCarousel() {
 
   return (
     <div className="relative">
-      {/* Login Alert Modal */}
-      {showLoginAlert && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-navy-900 border border-navy-700 rounded-lg p-6 max-w-md w-full">
-            <div className="flex items-center space-x-3 mb-4">
-              <AlertTriangle className="h-6 w-6 text-yellow-400" />
-              <h3 className="text-xl font-semibold text-white">Login Required</h3>
-            </div>
-            <p className="text-gray-300 mb-6">
-              You need to login to book tickets for events. Please sign in to continue.
-            </p>
-            <div className="flex space-x-3">
-              <Button 
-                onClick={handleLoginRedirect}
-                className="flex-1 bg-blue-600 hover:bg-blue-700"
-              >
-                Login Now
-              </Button>
-              <Button 
-                onClick={() => setShowLoginAlert(false)}
-                variant="outline"
-                className="flex-1 border-navy-600 text-white hover:bg-navy-800"
-              >
-                Cancel
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Carousel Container */}
       <div className="relative overflow-hidden">
         <div 
@@ -224,15 +174,8 @@ export default function EventsCarousel() {
                       </div>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row gap-3">
-                      <Button 
-                        onClick={() => handleBookNow(event._id)}
-                        className="flex-1 bg-blue-600 hover:bg-blue-700"
-                        disabled={availableSeats <= 0}
-                      >
-                        {availableSeats > 0 ? 'Book Now' : 'Fully Booked'}
-                      </Button>
-                      <Button asChild variant="outline" className="flex-1 border-navy-600 text-white hover:bg-navy-800">
+                    <div className="flex justify-center">
+                      <Button asChild className="bg-blue-600 hover:bg-blue-700 px-8">
                         <Link href={`/event/${event._id}`}>
                           View Details
                         </Link>

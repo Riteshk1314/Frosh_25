@@ -47,8 +47,8 @@ export default function ConfirmationPage() {
     if (!ticketData) return;
 
     const ticketText = `
-THAPAR UNIVERSITY EVENT TICKET
-================================
+FROSH 2025 EVENT TICKET
+=======================
 
 Ticket ID: ${ticketData.ticketId}
 Event: ${ticketData.event?.name || 'Event'}
@@ -82,7 +82,7 @@ Please bring this ticket (digital or printed) to the event.
 
     const shareData = {
       title: `${ticketData.event?.name || 'Event'} - Ticket Confirmed!`,
-      text: `I've booked my ticket for ${ticketData.event?.name || 'the event'} at Thapar University! Ticket ID: ${ticketData.ticketId}`,
+      text: `I've booked my ticket for ${ticketData.event?.name || 'the event'} at FROSH 2025! Ticket ID: ${ticketData.ticketId}`,
       url: window.location.origin
     };
 
@@ -290,7 +290,7 @@ Please bring this ticket (digital or printed) to the event.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild variant="outline" className="border-white text-white hover:bg-white hover:text-black">
-                <Link href="mailto:support@thapar.edu">
+                <Link href="mailto:support@frosh2025.com">
                   Contact Support
                 </Link>
               </Button>

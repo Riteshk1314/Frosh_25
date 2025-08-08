@@ -7,9 +7,9 @@ import { AuthProvider } from '@/components/auth-provider';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'FROSH 2024 - Thapar University',
-  description: 'Register for Thapar University\'s biggest freshers event - FROSH 2024. Free entry for all students!',
-  keywords: 'Thapar University, FROSH, freshers, event, registration, 2024',
+  title: 'FROSH 2025 - The Ultimate Freshers Experience',
+  description: 'Join FROSH 2025 - The biggest and most exciting freshers event! Free entry for all students with amazing activities and networking opportunities.',
+  keywords: 'FROSH, freshers, event, registration, 2025, university, students, networking',
     generator: 'v0.dev'
 };
 

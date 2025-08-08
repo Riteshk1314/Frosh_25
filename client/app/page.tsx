@@ -19,7 +19,7 @@ export default function HomePage() {
               Upcoming Events
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Discover amazing events happening at Thapar University. Login and book your tickets now!
+              Discover amazing events happening at FROSH 2025. Login and book your tickets now!
             </p>
           </div>
 
@@ -36,7 +36,7 @@ export default function HomePage() {
       </section>
       
       {/* Features Section */}
-      <section className="py-20 bg-black">
+      {/* <section className="py-20 bg-black">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">
@@ -97,7 +97,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-blue-600 to-blue-800">
@@ -106,7 +106,7 @@ export default function HomePage() {
             Ready to Join the Fun?
           </h2>
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Don't miss out on Thapar University's amazing events. Login and book your tickets now!
+            Don't miss out on FROSH 2025's amazing events. Login and book your tickets now!
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 text-lg">

@@ -61,7 +61,7 @@ export default function EventsPage() {
             All Events
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Discover all the exciting events happening at Thapar University. Book your tickets now!
+            Discover all the exciting events happening at FROSH 2025. Book your tickets now!
           </p>
         </div>
 

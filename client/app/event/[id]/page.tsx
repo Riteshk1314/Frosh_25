@@ -12,23 +12,6 @@ import { useAuth } from '@/components/auth-provider';
 import QRCodeGenerator from '@/components/qr-code-generator';
 import type { Event, Pass } from '@/types';
 
-// This function is required for static export with dynamic routes
-export async function generateStaticParams() {
-  // You would need to fetch all events at build time
-  // For now, returning an empty array to prevent build errors
-  // In production, you'd fetch from your API
-  try {
-    // const events = await fetch('your-api-url/getEvents').then(res => res.json());
-    // return events.data.events.map((event: Event) => ({
-    //   id: event._id,
-    // }));
-    return [];
-  } catch (error) {
-    console.error('Failed to generate static params:', error);
-    return [];
-  }
-}
-
 export default function EventDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -64,22 +47,45 @@ export default function EventDetailPage() {
   useEffect(() => {
     const checkUserPass = async () => {
       if (!isAuthenticated || !eventId) {
+        console.log('Pass check skipped - not authenticated or no eventId:', { isAuthenticated, eventId });
         return;
       }
 
       setIsLoadingPass(true);
       try {
+        console.log('Checking pass for event:', eventId);
         const passResponse = await passService.getPassForEvent(eventId);
-        if (passResponse.success && passResponse.data.passes.length > 0) {
-          // Get the first active pass
-          const activePass = passResponse.data.passes.find(pass => pass.passStatus === 'active');
-          if (activePass) {
-            setUserPass(activePass);
-          }
+        console.log('Pass response:', passResponse);
+        
+        if (passResponse.success && passResponse.pass) {
+          console.log('Found pass:', passResponse.pass);
+          // Convert the single pass to the expected format
+          const pass = {
+            passId: passResponse.pass._id,
+            userId: passResponse.pass.userId,
+            eventId: passResponse.pass.eventId,
+            passStatus: passResponse.pass.passStatus,
+            isScanned: passResponse.pass.isScanned,
+            timeScanned: passResponse.pass.timeScanned,
+            createdAt: passResponse.pass.createdAt,
+            userEmail: passResponse.pass.userEmail || user?.email || ''
+          };
+          console.log('Converted pass:', pass);
+          setUserPass(pass);
+        } else {
+          console.log('No pass found or request failed:', { success: passResponse.success, hasPass: !!passResponse.pass });
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error('Failed to check user pass:', error);
-        // Don't show error for pass check as it's optional
+        // Check for specific error types
+        if (error.statusCode === 404) {
+          console.log('404 error - no passes found for this user and event');
+        } else if (error.statusCode === 401) {
+          console.log('401 error - authentication failed, user may need to login again');
+          // Optionally trigger logout here
+        } else if (error.statusCode === 0) {
+          console.log('Network error - backend server may not be running');
+        }
       } finally {
         setIsLoadingPass(false);
       }

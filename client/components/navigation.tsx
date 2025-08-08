@@ -15,7 +15,6 @@ export default function Navigation() {
   const navItems = [
     { href: '/', label: 'Home' },
     { href: '/events', label: 'Events' },
-    { href: '/tickets', label: 'Book Tickets' },
   ];
 
   const handleLogout = () => {
@@ -29,7 +28,7 @@ export default function Navigation() {
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="flex items-center space-x-2">
             <div className="text-2xl font-bold text-white">
-              THAPAR <span className="text-blue-400">EVENTS</span>
+              FROSH <span className="text-blue-400">2025</span>
             </div>
           </Link>
 

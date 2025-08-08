@@ -231,45 +231,42 @@ const getPassByUserAndEvent = async (req, res) => {
       });
     }
     console.log("Fetching passes for user:", userId, "and event:", eventId);
-    const passes = await Pass.find({
+    const pass = await Pass.findOne({
       userId: userId,
       eventId: eventId,
     })
-    console.log("Found passes:", passes);
-    if (!passes || passes.length === 0) {
+    console.log("Found passes:", pass);
+    if (!pass|| pass.length === 0) {
       return res.status(404).json({ 
         success: false,
         error: "No passes found for this user and event" 
       });
     }
 
-    // Map through all passes to create the response array
-    const passesData = passes.map(pass => {
-      return {
-        passId: pass._id,
-        userId: pass.userId,
-        eventId: pass.eventId._id,
-        eventName: pass.eventId.name,
-        eventStartTime: pass.eventId.startTime,
-        eventLocation: pass.eventId.location,
-        eventMode: pass.eventId.mode,
-        passStatus: pass.passStatus,
-        isScanned: pass.isScanned,
-        timeScanned: pass.timeScanned,
-        createdAt: pass.createdAt,
-        userEmail: req.user.email
-      };
-    });
+    // // Map through all passes to create the response array
+    // const passesData = passes.map(pass => {
+    //   return {
+    //     passId: pass._id,
+    //     userId: pass.userId,
+    //     eventId: pass.eventId._id,
+    //     eventName: pass.eventId.name,
+    //     eventStartTime: pass.eventId.startTime,
+    //     eventLocation: pass.eventId.location,
+    //     eventMode: pass.eventId.mode,
+    //     passStatus: pass.passStatus,
+    //     isScanned: pass.isScanned,
+    //     timeScanned: pass.timeScanned,
+    //     createdAt: pass.createdAt,
+    //     userEmail: req.user.email
+    //   };
+    // });
 
-    console.log("Passes found:", passesData.length);
+    // console.log("Passes found:", passesData.length);
 
     return res.status(200).json({
       success: true,
       message: "Passes found successfully",
-      data: {
-        passes: passesData,
-        count: passesData.length
-      }
+      pass,
     });
   } catch (error) {
     console.error('Get passes error:', error);

@@ -47,13 +47,27 @@ export default function EventDetailPage() {
 
       setIsLoadingPass(true);
       try {
+        console.log('Checking pass for event:', eventId);
         const passResponse = await passService.getPassForEvent(eventId);
-        if (passResponse.success && passResponse.data.passes.length > 0) {
-          // Get the first active pass
-          const activePass = passResponse.data.passes.find(pass => pass.passStatus === 'active');
-          if (activePass) {
-            setUserPass(activePass);
-          }
+        console.log('Pass response:', passResponse);
+        
+        if (passResponse.success && passResponse.pass) {
+          console.log('Found pass:', passResponse.pass);
+          // Convert the single pass to the expected format
+          const pass = {
+            passId: passResponse.pass._id,
+            userId: passResponse.pass.userId,
+            eventId: passResponse.pass.eventId,
+            passStatus: passResponse.pass.passStatus,
+            isScanned: passResponse.pass.isScanned,
+            timeScanned: passResponse.pass.timeScanned,
+            createdAt: passResponse.pass.createdAt,
+            userEmail: passResponse.pass.userEmail || ''
+          };
+          console.log('Converted pass:', pass);
+          setUserPass(pass);
+        } else {
+          console.log('No pass found or request failed:', { success: passResponse.success, hasPass: !!passResponse.pass });
         }
       } catch (error) {
         console.error('Failed to check user pass:', error);

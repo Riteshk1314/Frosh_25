@@ -48,7 +48,7 @@ class ApiClient {
   ): Promise<T> {
     const url = `${this.baseURL}${endpoint}`;
     
-    const defaultHeaders = {
+    const defaultHeaders: Record<string, string> = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
     };
@@ -75,8 +75,15 @@ class ApiClient {
       
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
+        console.error('API Error Details:', {
+          url,
+          status: response.status,
+          statusText: response.statusText,
+          errorData,
+          requestBody: config.body
+        });
         throw new ApiError(
-          errorData.message || `HTTP ${response.status}: ${response.statusText}`,
+          errorData.message || errorData.error || `HTTP ${response.status}: ${response.statusText}`,
           response.status
         );
       }
