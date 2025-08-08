@@ -4,6 +4,7 @@ const Events = require("./../controllers/event.controller.js");
 const Passes = require("./../controllers/passes.controller.js");
 const auth = require("../middleware/auth.js");
 const AuthController = require("./../controllers/auth.controller.js");
+const Password = require("../controllers/password.controller.js")
 const { checkRole } = require("../middleware/role.middleware.js");
 const {
   createEventValidation,
@@ -38,7 +39,8 @@ router.post("/refresh-token", AuthController.refreshToken);
 // Event Routes (Public)
 router.get("/getEvents", getEventsValidation, Events.getEvents);
 router.get("/getEventById/:id", getEventByIdValidation, Events.getEventById);
-
+router.post("/api/auth/forgot-password", Password.trigReset)
+router.post("/api/auth/reset-password", Password.resetPass)
 // Protected Routes (authentication required)
 router.use(auth.authMiddleware);
 

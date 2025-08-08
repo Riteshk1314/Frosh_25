@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import LoginForm from '@/components/login-form';
 import { useAuth } from '@/components/auth-provider';
 
@@ -37,6 +38,14 @@ export default function LoginPage() {
           <p className="text-gray-300">Sign in to book your event tickets</p>
         </div>
         <LoginForm onSuccess={handleLoginSuccess} />
+        <div className="mt-6 text-center">
+          <Link 
+            href="/forgot-password" 
+            className="text-sm text-gray-400 hover:text-white transition-colors duration-200"
+          >
+            Forgot your password?
+          </Link>
+        </div>
       </div>
     </div>
   );

@@ -7,8 +7,8 @@ const UserSchema = new mongoose.Schema({
     required: true,
   },
   applicationId: {
-      type:Number,
-    },
+    type: Number,
+  },
   password: {
     type: String,
     required: true,
@@ -18,7 +18,7 @@ const UserSchema = new mongoose.Schema({
       },
       message: "Password must be at least 6 characters long",
     },
-    },
+  },
   image: {
     type: String,
     required: false,
@@ -33,8 +33,7 @@ const UserSchema = new mongoose.Schema({
     required: false,
   },
 
-
-  //backend
+  // backend
   accessToken: {
     type: String,
     required: true,
@@ -51,6 +50,16 @@ const UserSchema = new mongoose.Schema({
     type: String,
     enum: ["user", "admin", "superadmin"],
     default: "user",
+  },
+  
+  // Password reset fields
+  resetPasswordToken: {
+    type: String,
+    default: null,
+  },
+  resetPasswordExpires: {
+    type: Date,
+    default: null,
   },
 });
 
