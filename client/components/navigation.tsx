@@ -26,10 +26,12 @@ export default function Navigation() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border-b border-navy-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="text-2xl font-bold text-white">
-              FROSH <span className="text-blue-400">2025</span>
-            </div>
+          <Link href="/" className="flex items-center">
+            <img 
+              src="/frosh-logo.png" 
+              alt="FROSH 2025 - Navigating Through Timeless Trails" 
+              className="h-10 w-auto"
+            />
           </Link>
 
           {/* Desktop Navigation */}

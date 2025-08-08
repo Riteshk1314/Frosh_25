@@ -121,11 +121,11 @@ export default function EventsPage() {
                         View Details
                       </Link>
                     </Button>
-                    <Button asChild variant="outline" className="w-full border-navy-600 text-white hover:bg-navy-800">
+                    {/* <Button asChild variant="outline" className="w-full border-navy-600 text-white hover:bg-navy-800">
                       <Link href="/tickets">
                         Book Ticket
                       </Link>
-                    </Button>
+                    </Button> */}
                   </div>
                 </CardContent>
               </Card>

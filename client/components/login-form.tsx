@@ -53,7 +53,7 @@ export default function LoginForm({ onSuccess }: LoginFormProps) {
       <CardHeader>
         <CardTitle className="text-white text-2xl text-center">Login</CardTitle>
         <CardDescription className="text-gray-300 text-center">
-          Sign in to book your ticket for FROSH 2024
+          Sign in to book your ticket for FROSH 2025
         </CardDescription>
       </CardHeader>
       <CardContent>
