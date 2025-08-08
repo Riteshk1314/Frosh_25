@@ -149,9 +149,9 @@ const qrPassValidation = [
     .isLength({ min: 10 })
     .withMessage('Invalid pass UUID format'),
   
-  body('qrId')
-    .isMongoId()
-    .withMessage('Invalid QR ID format'),
+  // body('qrId')
+  //   .isMongoId()
+  //   .withMessage('Invalid QR ID format'),
   
   handleValidationErrors
 ];
@@ -167,15 +167,15 @@ const canScanValidation = [
 
 // Accept pass validation
 const acceptPassValidation = [
-  body('uuid')
+  body('passUUID')
     .notEmpty()
     .withMessage('Pass UUID is required')
     .isLength({ min: 10 })
     .withMessage('Invalid pass UUID format'),
   
-  body('qrId')
-    .isMongoId()
-    .withMessage('Invalid QR ID format'),
+  // body('qrId')
+  //   .isMongoId()
+  //   .withMessage('Invalid QR ID format'),
   
   handleValidationErrors
 ];

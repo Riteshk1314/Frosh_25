@@ -60,7 +60,8 @@ router.use(checkRole(["admin"]));
 router.post("/createEvent", createEventValidation, Events.createEvent);
 
 // Ticket Scanning Routes (Admin only)
-router.post("/canScan", canScanValidation, Passes.canScan);
-router.post("/accept", acceptPassValidation, Passes.Accept);
+router.get("/canScan", Passes.canScan);
+router.post("/editEvent", Events.updateEventById)
+router.post("/Accept", acceptPassValidation, Passes.Accept);
 
 module.exports = router;

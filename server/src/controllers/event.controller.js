@@ -309,9 +309,45 @@ const reqEventt = asyncHandler(async (req, res) => {
 			res.status(500).json({ error: "Internal server error" });
 		}
 	});
+	// controllers/eventController.js or .ts
+const updateEventById = asyncHandler(async (req, res) => {
+	try {
+		const updatedData = req.body;
+
+		const event = await Event.findByIdAndUpdate(req.body.eventId, updatedData, {
+			new: true,
+			runValidators: true,
+		});
+
+		if (!event) {
+			return res.status(404).json({
+				success: false,
+				message: "Event not found",
+			});
+		}
+
+		res.status(200).json({
+			success: true,
+			message: "Event updated successfully",
+			data: event,
+		});
+	} catch (error) {
+		console.error("Error in updateEventById:", error);
+		res.status(500).json({
+			success: false,
+			message: "Failed to update event",
+			error: error.message,
+		});
+	}
+});
+
+
+
+
 
 module.exports = {
 	createEvent,
 	getEvents,
+	updateEventById,
 	getEventById,
 };

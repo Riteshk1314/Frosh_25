@@ -114,7 +114,7 @@ export default function HomePage() {
                 Login to Book Tickets
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-blue-600 px-8 py-3 text-lg">
+            <Button asChild variant="outline" size="lg" className="border-white hover:text-white hover:bg-blue-600 text-blue-600 px-8 py-3 text-lg">
               <Link href="/events">
                 Explore All Events
               </Link>

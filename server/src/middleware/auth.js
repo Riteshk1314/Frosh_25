@@ -18,6 +18,7 @@ const authMiddleware = async (req, res, next) => {
       // Verify token
       const decoded = jwt.verify(token, process.env.SECRET);
 
+      console.log(decoded)
       // Find user
       const user = await User.findById(decoded.userId);
       if (!user || user.accessToken !== token) {
@@ -26,6 +27,8 @@ const authMiddleware = async (req, res, next) => {
           message: 'Invalid access token'
         });
       }
+
+      console.log(user)
 
       // Add user info to request
       req.user = {

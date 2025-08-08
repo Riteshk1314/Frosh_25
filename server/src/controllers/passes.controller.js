@@ -278,12 +278,11 @@ const getPassByUserAndEvent = async (req, res) => {
   }
 };
 const getPassByQrStringsAndPassUUID = async (req, res) => {
+  console.log(req.body.passUUID)
   try {
-    const pass = await Pass.findOne({
-      passUUID: req.body.passUUID,
-    })
+    const pass = await Pass.findById(req.body.passUUID).populate("userId").populate("eventId");
 
-    console.log(req.body.qrId)
+    // console.log(req.body.qrId)
     console.log(pass)
 
     if (!pass) {
@@ -293,26 +292,28 @@ const getPassByQrStringsAndPassUUID = async (req, res) => {
     let person = null;
 
     // Check if qrStrings exists and is an array
-    if (pass.qrStrings && Array.isArray(pass.qrStrings)) {
-      // Use for...of loop to iterate over the actual objects
-      for (const qr of pass.qrStrings) {
-        if (qr._id && qr._id.toString() === req.body.qrId) {
-          console.log("QR found", qr)
-          person = qr;
-          break;
-        }
-      }
-    }
+    // if (pass.qrStrings && Array.isArray(pass.qrStrings)) {
+    //   // Use for...of loop to iterate over the actual objects
+    //   for (const qr of pass.qrStrings) {
+    //     if (qr._id && qr._id.toString() === req.body.qrId) {
+    //       console.log("QR found", qr)
+    //       person = qr;
+    //       break;
+    //     }
+    //   }
+    // }
 
     console.log("Found person:", person)
 
     return res.status(200).json({
       success: true,
       data: {
-        buyer: pass.userId,
-        event: pass.eventId,
-        person,
-        amount: pass.amount,
+        buyer: pass.userId.name,
+        buyerIMG: pass.userId.image,
+        event: pass.eventId.name,
+        passStatus: pass.passStatus,
+        isScanned: pass.isScanned,
+        timeScanned: pass.timeScanned,
       },
     });
 
@@ -323,33 +324,36 @@ const getPassByQrStringsAndPassUUID = async (req, res) => {
 }
 const Accept = async (req, res) => {
   try {
-    let passUUID = req.body.uuid;
+    let passUUID = req.body.passUUID;
+    console.log(passUUID)
     if (!passUUID) {
       return res.status(400).json({ error: "Pass UUID is required" });
     }
-    let qrId = req.body.qrId;
-    if (!qrId) {
-      return res.status(400).json({ error: "QR ID is required" });
-    }
+    // let qrId = req.body.qrId;
+    // if (!qrId) {
+    //   return res.status(400).json({ error: "QR ID is required" });
+    // }
 
     // Find pass by passUUID field, not by _id
-    const pass = await Pass.findOne({ passUUID });
+    const pass = await Pass.findById(passUUID);
     if (!pass) {
       return res.status(404).json({ error: "Pass not found" });
     }
 
+    console.log(pass);
+
     // Find the QR string by _id
-    const qrString = pass.qrStrings.find(qr => qr._id.toString() === qrId);
-    if (!qrString) {
-      return res.status(404).json({ error: "QR code not found" });
-    }
+    // const qrString = pass.qrStrings.find(qr => qr._id.toString() === qrId);
+    // if (!qrString) {
+    //   return res.status(404).json({ error: "QR code not found" });
+    // }
 
-    if (qrString.isScanned) {
-      return res.status(400).json({ error: "QR code already scanned" });
-    }
+    // if (qrString.isScanned) {
+    //   return res.status(400).json({ error: "QR code already scanned" });
+    // }
 
-    qrString.scannedAt = new Date();
-    qrString.qrScanned = true;
+    pass.timeScanned = new Date();
+    pass.isScanned = true;
     await pass.save();
     return res.status(200).json({ message: "Pass scanned successfully" });
   }
@@ -392,10 +396,11 @@ const Accept = async (req, res) => {
 // };
 
 
+
 const canScan = async (req, res) => {
   let user = req.user;
-  let eventId = req.body.eventId;
-  const event = await Event.findById(eventId);
+  // let eventId = req.body.eventId;
+  // const event = await Event.findById(eventId);
   if (user.role !== 'admin' && user.role !== 'event_manager') {
     return res.status(403).json({ error: "Forbidden: Invalid role" });
   }

@@ -23,7 +23,12 @@ app.use(logger.dev, logger.combined);
 
 app.use(cookieParser());
 
-app.use(cors("*"));
+app.use(cors({
+  origin: 'http://localhost:3000',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
 
 // This middleware adds the json header to every response
 app.use("*", (req, res, next) => {
