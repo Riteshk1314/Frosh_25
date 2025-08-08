@@ -28,7 +28,7 @@ export default function Navigation() {
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="flex items-center">
             <img 
-              src="/frosh-logo.png" 
+              src="/frosh.svg" 
               alt="FROSH 2025 - Navigating Through Timeless Trails" 
               className="h-10 w-auto"
             />

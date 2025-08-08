@@ -20,7 +20,7 @@ export default function HeroSection() {
 				{/* FROSH Logo */}
 				<div className="mb-8 flex justify-center">
 					<img 
-						src="/frosh-logo.png" 
+						src="/frosh.svg" 
 						alt="FROSH 2025 - Navigating Through Timeless Trails" 
 						className="h-48 md:h-64 w-auto filter drop-shadow-2xl"
 					/>
@@ -43,18 +43,18 @@ export default function HeroSection() {
 					>
 						<Link href="/events">Explore Events</Link>
 					</Button>
-					<Button
+					{/* <Button
 						asChild
 						variant="outline"
 						size="lg"
 						className="border-2 border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-black px-8 py-4 text-lg font-semibold backdrop-blur-sm transition-all duration-300"
 					>
 						<Link href="/events">View All Events</Link>
-					</Button>
+					</Button> */}
 				</div>
 
 				{/* Feature Cards */}
-				<div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+				{/* <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
 					<div className="bg-black/30 backdrop-blur-sm rounded-xl p-6 border border-navy-700/50 hover:border-blue-500/50 transition-all duration-300">
 						<div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-4">
 							<span className="text-white font-bold text-xl">∞</span>
@@ -82,7 +82,7 @@ export default function HeroSection() {
 						</h3>
 						<p className="text-gray-300">Memories that last forever</p>
 					</div>
-				</div>
+				</div> */}
 			</div>
 		</section>
 	);
