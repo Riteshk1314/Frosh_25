@@ -1,4 +1,5 @@
 'use client';
+import PixelCard from './PixelCard';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -66,14 +67,14 @@ export default function EventsCarousel() {
           {error || 'No events available at the moment.'}
         </p>
         <Button asChild>
-          <Link href="/events">View All Events</Link>
+          <Link href="/events"></Link>
         </Button>
       </div>
     );
   }
 
   return (
-    <div className="relative">
+    <div className="relative bg-transparent">
       {/* Carousel Container */}
       <div className="relative overflow-hidden">
         <div 
@@ -84,17 +85,32 @@ export default function EventsCarousel() {
             const availableSeats = event.availableSeats || event.totalSeats - event.registrationCount;
             
             return (
-              <div key={event._id} className="w-full flex-shrink-0 px-4">
-                <Card className="bg-navy-900/50 border-navy-700 hover:bg-navy-900/70 transition-colors max-w-4xl mx-auto">
-                  <CardHeader>
+              <div key={event._id} className="h-[100vh] flex gap-10 flex-col md:flex-row items-center justify-center relative  w-full flex-shrink-0 px-4">
+<div className='flex flex-col gap-10 px-2 py-0 justify-center items-center md:w-[40vw] md:h-[70vh] w-screen h-screen bg-black'>
+        <div className='text-white text-[5vw] md:text-[1.5vw] text-center px-10 flex items-center w-[100%] border-2 border-blue-500 rounded-2xl h-[65%]'>
+            {event.eventDescription}
+        </div>
+        <div className='w-[100%] text-white font-medium flex items-center justify-center text-[2vw] h-[25%] border-2 border-blue-500 rounded-2xl'>
+Date: {event.startTime} <br />
+Venue: {event.location} <br />
+        </div>
+    
+    </div>
+
+
+<div className='flex w-screen md:w-[25vw] h-[110%] md:h-[70vh] items-center justify-center px-2 py-2 bg-black' >
+<div className='w-[100%] rounded-2xl h-[100%] flex border-2 items-center justify-center border-blue-500 relative'>
+
+                <PixelCard variant='blue' className=" max-w-4xl mx-auto bg-[#230579]">
+                  <CardHeader className='absolute'>
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                       <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-2">
                           <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                             event.isLive 
-                              ? 'bg-green-500/20 text-green-400' 
-                              : 'bg-gray-500/20 text-gray-400'
-                          }`}>
+                            ? 'bg-green-500/20 text-green-400' 
+                            : 'bg-gray-500/20 text-gray-400'
+                            }`}>
                             {event.isLive ? 'Live' : 'Upcoming'}
                           </span>
                           <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-400 capitalize">
@@ -111,78 +127,16 @@ export default function EventsCarousel() {
                       
                       <div className="flex flex-col items-end space-y-2">
                         <div className="text-right">
-                          <div className="text-2xl font-bold text-blue-400">
-                            {availableSeats}
-                          </div>
-                          <div className="text-sm text-gray-400">seats left</div>
+                     
                         </div>
                       </div>
                     </div>
                   </CardHeader>
                   
-                  <CardContent className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="flex items-center space-x-3">
-                        <Calendar className="h-5 w-5 text-blue-400 flex-shrink-0" />
-                        <div>
-                          <div className="text-white font-medium">
-                            {new Date(event.startTime).toLocaleDateString()}
-                          </div>
-                          <div className="text-gray-400 text-sm">Event Date</div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center space-x-3">
-                        <Clock className="h-5 w-5 text-blue-400 flex-shrink-0" />
-                        <div>
-                          <div className="text-white font-medium">
-                            {new Date(event.startTime).toLocaleTimeString([], {
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
-                          </div>
-                          <div className="text-gray-400 text-sm">Start Time</div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center space-x-3">
-                        <MapPin className="h-5 w-5 text-blue-400 flex-shrink-0" />
-                        <div>
-                          <div className="text-white font-medium truncate">
-                            {event.location}
-                          </div>
-                          <div className="text-gray-400 text-sm">Venue</div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center space-x-4">
-                      <div className="flex items-center space-x-2">
-                        <Users className="h-5 w-5 text-blue-400" />
-                        <span className="text-white">
-                          {event.registrationCount} / {event.totalSeats} registered
-                        </span>
-                      </div>
-                      
-                      <div className="flex-1 bg-gray-700 rounded-full h-2">
-                        <div 
-                          className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                          style={{ 
-                            width: `${Math.min((event.registrationCount / event.totalSeats) * 100, 100)}%` 
-                          }}
-                        ></div>
-                      </div>
-                    </div>
-
-                    <div className="flex justify-center">
-                      <Button asChild className="bg-blue-600 hover:bg-blue-700 px-8">
-                        <Link href={`/event/${event._id}`}>
-                          View Details
-                        </Link>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+                 
+                </PixelCard>
+                </div>
+                            </div>
               </div>
             );
           })}
@@ -194,7 +148,7 @@ export default function EventsCarousel() {
         <>
           <button
             onClick={prevSlide}
-            className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors z-10"
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-white p-2 rounded-full transition-colors z-10"
             aria-label="Previous event"
           >
             <ChevronLeft className="h-6 w-6" />
@@ -202,7 +156,7 @@ export default function EventsCarousel() {
           
           <button
             onClick={nextSlide}
-            className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors z-10"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-white p-2 rounded-full transition-colors z-10"
             aria-label="Next event"
           >
             <ChevronRight className="h-6 w-6" />

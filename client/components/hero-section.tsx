@@ -1,17 +1,29 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import CountdownTimer from "./countdown-timer";
+import Dither from '@/components/Dither';
 
 export default function HeroSection() {
 	// Use a default upcoming date for the countdown
 	const eventDate = "2025-09-15T18:00:00";
 
 	return (
-		<section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-navy-950 to-navy-900 overflow-hidden">
+		<section className="relative min-h-screen flex items-center justify-center overflow-hidden">
 			{/* Animated background elements */}
 			<div className="absolute inset-0">
-				<div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
-				<div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-cyan-500/10 rounded-full blur-2xl animate-pulse delay-1000"></div>
+
+<div style={{ width: '100%', height: '100%', position: 'fixed' }} className="-z-50">
+  <Dither
+    waveColor={[0, 0, 1]}
+    disableAnimation={false}
+    enableMouseInteraction={false}
+    mouseRadius={0.3}
+    colorNum={40}
+    waveAmplitude={0.4}
+    waveFrequency={3}
+    waveSpeed={0.05}
+  />
+</div>
 			</div>
 			
 			<div className="absolute inset-0 bg-black/40"></div>
@@ -20,29 +32,21 @@ export default function HeroSection() {
 				{/* FROSH Logo */}
 				<div className="mb-8 flex justify-center">
 					<img 
-						src="/frosh.svg" 
+						src="/frosh.png" 
 						alt="FROSH 2025 - Navigating Through Timeless Trails" 
-						className="h-48 md:h-64 w-auto filter drop-shadow-2xl"
+						className="h-56 md:h-96 w-auto filter drop-shadow-2xl"
 					/>
 				</div>
 
 				{/* Description */}
 				<div className="mb-12">
 					<p className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto">
-						Join us for the ultimate freshers experience with unforgettable events, 
-						amazing networking opportunities, and memories that last a lifetime.
 					</p>
 				</div>
 
 				{/* Action Buttons */}
 				<div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-					<Button
-						asChild
-						size="lg"
-						className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
-					>
-						<Link href="/events">Explore Events</Link>
-					</Button>
+					
 					{/* <Button
 						asChild
 						variant="outline"
