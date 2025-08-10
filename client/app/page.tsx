@@ -5,6 +5,8 @@ import EventsCarousel from '@/components/events-carousel';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Calendar, MapPin, Users, Music, Trophy, Camera } from 'lucide-react';
+import Map from '@/components/Map';
+import AboutUs from '@/components/AboutUs';
 
 export default function HomePage() {
   return (
@@ -23,13 +25,7 @@ export default function HomePage() {
 
           <EventsCarousel />
 
-          <div className="text-center mt-12">
-            <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
-              <Link href="/events">
-                View All Events
-              </Link>
-            </Button>
-          </div>
+         
         </div>
       </section>
       
@@ -96,7 +92,8 @@ export default function HomePage() {
           </div>
         </div>
       </section> */}
-
+<Map />
+<AboutUs />
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-blue-600 to-blue-800">
         <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">

@@ -86,7 +86,17 @@ export default function EventsCarousel() {
             
             return (
               <div key={event._id} className="h-[100vh] flex gap-10 flex-col md:flex-row items-center justify-center relative  w-full flex-shrink-0 px-4">
-<div className='flex flex-col gap-10 px-2 py-0 justify-center items-center md:w-[40vw] md:h-[70vh] w-screen h-screen bg-black'>
+      {events.length > 1 && (
+     
+        <button
+        onClick={prevSlide}
+        className="text-white  bg-[#00000070] backdrop-blur-lg rounded-full transition-colors z-10 object-left"
+        aria-label="Previous event"
+        >
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+            )}             
+<div className='flex flex-col gap-10 px-2 py-0 justify-center items-center md:w-[40vw] md:h-[70vh] w-screen h-screen bg-[#00000070] backdrop-blur-lg'>
         <div className='text-white text-[5vw] md:text-[1.5vw] text-center px-10 flex items-center w-[100%] border-2 border-blue-500 rounded-2xl h-[65%]'>
             {event.eventDescription}
         </div>
@@ -97,9 +107,8 @@ Venue: {event.location} <br />
     
     </div>
 
-
-<div className='flex w-screen md:w-[25vw] h-[110%] md:h-[70vh] items-center justify-center px-2 py-2 bg-black' >
-<div className='w-[100%] rounded-2xl h-[100%] flex border-2 items-center justify-center border-blue-500 relative'>
+<div className='flex w-screen md:w-[25vw] h-[110%] md:h-[70vh] items-center justify-center px-2 py-2 bg-[#00000070] backdrop-blur-lg' >
+<div className='w-[100%] rounded-2xl h-[100%] flex border-2 items-center justify-center border-blue-500 relative flex-col'>
 
                 <PixelCard variant='blue' className=" max-w-4xl mx-auto bg-[#230579]">
                   <CardHeader className='absolute'>
@@ -135,8 +144,26 @@ Venue: {event.location} <br />
                   
                  
                 </PixelCard>
+                 <div className="text-center mt-12">
+            <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg">
+              <Link href="/events">
+                View All Events
+              </Link>
+            </Button>
+          </div>
                 </div>
                             </div>
+                               {events.length > 1 && (
+     
+                                 
+                                 <button
+            onClick={nextSlide}
+            className="text-white  bg-[#00000070] backdrop-blur-lg rounded-full transition-colors z-10 object-left"
+            aria-label="Previous event"
+            >
+            <ChevronRight className="h-6 w-6" />
+          </button>
+                              )}
               </div>
             );
           })}
@@ -144,25 +171,7 @@ Venue: {event.location} <br />
       </div>
 
       {/* Navigation Arrows */}
-      {events.length > 1 && (
-        <>
-          <button
-            onClick={prevSlide}
-            className="absolute left-4 top-1/2 -translate-y-1/2 text-white p-2 rounded-full transition-colors z-10"
-            aria-label="Previous event"
-          >
-            <ChevronLeft className="h-6 w-6" />
-          </button>
-          
-          <button
-            onClick={nextSlide}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-white p-2 rounded-full transition-colors z-10"
-            aria-label="Next event"
-          >
-            <ChevronRight className="h-6 w-6" />
-          </button>
-        </>
-      )}
+   
 
       {/* Dots Indicator */}
       {events.length > 1 && (
